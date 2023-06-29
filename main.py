@@ -1,4 +1,5 @@
 import os
+import uuid
 
 import requests
 import json
@@ -46,22 +47,34 @@ def create_user(access_token, user_data):
     return response
 
 
+def generate_deterministic_uuid(text, salt="nebari-gh-random"):
+    text_ = f"{text}-{salt}"
+    return uuid.uuid5(uuid.NAMESPACE_URL, text_)
+
+
 def main():
     access_token = get_access_token()
-    # User data
-    user_data = {
-        "username": "new_user",
-        "email": "new_user@example.com",
-        "enabled": True,
-        "firstName": "John",
-        "lastName": "Doe",
-        "credentials": [{
-            "type": "password",
-            "value": "password",
-            "temporary": False
-        }]
-    }
-    return create_user(access_token, user_data)
+    users = json.load(open('users.json', 'r'))
+    for user in users:
+        password = generate_deterministic_uuid(user['Email']),
+        print(f"Pass for user {user}: {user}")
+        try:
+            user_data = {
+                "username": user['Email'],
+                "email": user['Email'],
+                "enabled": True,
+                "firstName": user["Name"],
+                # "lastName": "Doe",
+                "credentials": [{
+                    "type": "password",
+                    "value": password,
+                    "temporary": False
+                }]
+            }
+            create_user(access_token, user_data)
+        except Exception as e:
+            print(f"Failed to create user: {user}")
+            print(e)
 
 
 if __name__ == "__main__":
