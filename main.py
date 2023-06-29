@@ -49,7 +49,7 @@ def create_user(access_token, user_data):
 
 def generate_deterministic_uuid(text, salt="nebari-gh-random"):
     text_ = f"{text}-{salt}"
-    return uuid.uuid5(uuid.NAMESPACE_URL, text_)
+    return uuid.uuid5(uuid.NAMESPACE_URL, text_).hex
 
 
 def main():

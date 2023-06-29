@@ -4,6 +4,12 @@ on:
   push:
   pull_request:
 
+env:
+  REALM_NAME: ${{ secrets.REALM_NAME }}
+  BASE_URL: ${{ secrets.BASE_URL }}
+  CLIENT_ID: ${{ secrets.CLIENT_ID }}
+  CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,4 +24,5 @@ jobs:
 
       - name: Create users from Keycloak API
         run: |
-          echo "WIP"
+          echo "Creating users"
+          python main.py
