@@ -13,9 +13,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Create ~/.clasprc.json
+      - name: Write CLASPRC to file
         run: |
-         echo "${{ secrets.CLASPRC }}" > ~/.clasprc.json
+          echo "$CLASPRC_JSON" > $HOME/.clasprc.json
+        env:
+          CLASPRC_JSON: ${{ secrets.CLASPRC }}
 
       - name: Install clasp
         run: |
@@ -23,9 +25,9 @@ jobs:
 
       - name: Clasp Clone
         run: |
-          clasp clone ${{ secrets.SCRIPT_ID }}
+          clasp clone ${{ secrets.SCRIPT_ID }} --auth ~/.clasprc.json
           git checkout -- .
 
       - name: Deploy AppScript project
         run: |
-          clasp push
+          clasp push --auth ~/.clasprc.json
