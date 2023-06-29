@@ -1,0 +1,23 @@
+# docs
+.nox
+_build
+
+# python
+__pycache__
+build/
+*.egg
+*.egg-info/
+dist/
+env/
+
+# IntelliJ
+.idea/
+
+.vscode/
+.pytest_cache
+
+/.ruff_cache
+
+.env
+
+.clasp.json
