@@ -37,7 +37,6 @@ def create_user(access_token, user_data):
         KEYCLOAK_URL,
         headers=headers, data=json.dumps(user_data)
     )
-
     # Check the response status
     if response.status_code == 201:
         print("User created successfully!")
@@ -56,8 +55,8 @@ def main():
     access_token = get_access_token()
     users = json.load(open('users.json', 'r'))
     for user in users:
-        password = generate_deterministic_uuid(user['Email']),
-        print(f"Pass for user {user}: {user}")
+        password = generate_deterministic_uuid(user['Email'])
+        print(f"Pass for user {user}: {password}")
         try:
             user_data = {
                 "username": user['Email'],
@@ -71,7 +70,8 @@ def main():
                     "temporary": False
                 }]
             }
-            create_user(access_token, user_data)
+            response = create_user(access_token, user_data)
+            return response
         except Exception as e:
             print(f"Failed to create user: {user}")
             print(e)
