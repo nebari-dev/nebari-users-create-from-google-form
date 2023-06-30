@@ -1,5 +1,8 @@
 # Nebari user's from Google Form (WIP)
 
+[![User Creation](https://github.com/Quansight/nebari-users-create-from-google-form/actions/workflows/user_create.yml/badge.svg)](https://github.com/Quansight/nebari-users-create-from-google-form/actions/workflows/user_create.yml)
+[![Deploy AppScript](https://github.com/Quansight/nebari-users-create-from-google-form/actions/workflows/deploy.yml/badge.svg)](https://github.com/Quansight/nebari-users-create-from-google-form/actions/workflows/deploy.yml)
+
 This will create users in Nebari using Keycloak's API.
 
 The information flow is like the following:
