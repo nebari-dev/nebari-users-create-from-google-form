@@ -1,4 +1,4 @@
-# Nebari user's from Google Form (WIP)
+# Nebari user's from Google Form
 
 [![User Creation](https://github.com/Quansight/nebari-users-create-from-google-form/actions/workflows/user_create.yml/badge.svg)](https://github.com/Quansight/nebari-users-create-from-google-form/actions/workflows/user_create.yml)
 [![Deploy AppScript](https://github.com/Quansight/nebari-users-create-from-google-form/actions/workflows/deploy.yml/badge.svg)](https://github.com/Quansight/nebari-users-create-from-google-form/actions/workflows/deploy.yml)
