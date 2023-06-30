@@ -50,6 +50,14 @@ class KeyCloakClient:
         rjson = response.json()
         return {group['name']: group for group in rjson}
 
+    def get_users(self):
+        response = requests.get(
+            KEYCLOAK_USERS_URL,
+            headers=self._create_headers(),
+        )
+        rjson = response.json()
+        return {user['email']: user for user in rjson}
+
     def add_user_to_group(self, user_id, group_names):
         groups = self.get_groups()
         group_ids = {groups[group_name]['id'] for group_name in group_names}
@@ -65,7 +73,7 @@ class KeyCloakClient:
                 headers=self._create_headers(),
             )
             responses.append(response)
-            logging.info(f"Adding user to group {group_add_url} response: {response}")
+            logging.info(f"Adding user to group {group_add_url.split('/')[-1]} response: {response}")
         return responses
 
     def _create_headers(self, access_token=None):
@@ -83,13 +91,14 @@ class KeyCloakClient:
             headers=headers, data=json.dumps(user_data)
         )
         user_id = None
-        try:
-            user_id = response.headers["Location"].split("/")[-1]
-        except Exception as e:
-            logging.error(e)
-            pass
         if response.status_code == 201:
             logging.info("User created successfully!")
+            user_id = response.headers["Location"].split("/")[-1]
+
+        if response.status_code == 409:
+            logging.info(f"User already exists: {user_data['email']} {response.status_code}")
+            users = self.get_users()
+            user_id = users[user_data['email']]['id']
         else:
             logging.info(f"Failed to create user. Status code: {response.status_code}")
             logging.info(f"Response: {response.text}")
