@@ -72,13 +72,14 @@ function sendFormDataToGitHub(formAttributes) {
     var encodedContent = Utilities.base64EncodeWebSafe(updatedContent);
 
     // Prepare request options
+    var commitMessage = 'Update users.json from google form data'
     var options = {
         method: 'PUT',
         headers: {
             Authorization: 'Bearer ' + githubToken,
             'Content-Type': 'application/json'
         },
-        payload: JSON.stringify({content: encodedContent, sha: sha, message: 'Update form data'})
+        payload: JSON.stringify({content: encodedContent, sha: sha, message: commitMessage})
     };
 
     // Send request to GitHub API
