@@ -1,3 +1,4 @@
+import logging
 import os
 import uuid
 
@@ -39,10 +40,10 @@ def create_user(access_token, user_data):
     )
     # Check the response status
     if response.status_code == 201:
-        print("User created successfully!")
+        logging.info("User created successfully!")
     else:
-        print("Failed to create user. Status code:", response.status_code)
-        print("Response:", response.text)
+        logging.info(f"Failed to create user. Status code: {response.status_code}")
+        logging.info(f"Response: {response.text}")
     return response
 
 
@@ -51,30 +52,43 @@ def generate_deterministic_uuid(text, salt="nebari-gh-random"):
     return uuid.uuid5(uuid.NAMESPACE_URL, text_).hex
 
 
+def setup_logging():
+    """
+    Setups the logging.
+    :return: None
+    """
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)9s %(lineno)4s %(module)s: %(message)s"
+    )
+
+
 def main():
+    setup_logging()
     access_token = get_access_token()
     users = json.load(open('users.json', 'r'))
-    for user in users:
+    total_users = len(users)
+    for idx, user in enumerate(users):
+        logging.info("#"*50)
+        logging.info(f"## {idx + 1}/{total_users} Creating user: {user}")
         password = generate_deterministic_uuid(user['Email'])
-        print(f"Pass for user {user}: {password}")
+        logging.info(f"Pass for user: {password}")
         try:
             user_data = {
                 "username": user['Email'],
                 "email": user['Email'],
                 "enabled": True,
                 "firstName": user["Name"],
-                # "lastName": "Doe",
                 "credentials": [{
                     "type": "password",
                     "value": password,
                     "temporary": False
                 }]
             }
-            response = create_user(access_token, user_data)
-            return response
+            create_user(access_token, user_data)
         except Exception as e:
-            print(f"Failed to create user: {user}")
-            print(e)
+            logging.info(f"Failed to create user: {user}")
+            logging.info(e)
 
 
 if __name__ == "__main__":
