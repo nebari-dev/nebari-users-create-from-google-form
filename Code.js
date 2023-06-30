@@ -51,8 +51,6 @@ function sendFormDataToGitHub(formAttributes) {
     try {
         if (currentContent) {
             // If file exists and contains valid JSON data
-            Logger.log("currentContent.toString()");
-            Logger.log(currentContent.toString());
             existingData = JSON.parse(currentContent);
             Logger.log("existingData");
             Logger.log(existingData);
@@ -64,7 +62,7 @@ function sendFormDataToGitHub(formAttributes) {
             // If file doesn't exist, create new JSON array with form data
             existingData = [formData];
         }
-        updatedContent = JSON.stringify(existingData);
+        updatedContent = JSON.stringify(existingData, null, 2);
     } catch (error) {
         // Handle JSON parsing errors
         Logger.log('Error parsing existing JSON content: ' + error);

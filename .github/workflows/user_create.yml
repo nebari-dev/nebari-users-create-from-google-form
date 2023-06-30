@@ -2,7 +2,12 @@ name: User Creation
 
 on:
   push:
+    branches:
+      - main
+    paths:
+      - "users.json"
   pull_request:
+  workflow_dispatch:
 
 env:
   REALM_NAME: ${{ secrets.REALM_NAME }}
