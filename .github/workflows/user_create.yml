@@ -25,4 +25,4 @@ jobs:
       - name: Create users from Keycloak API
         run: |
           echo "Creating users"
-          python main.py
+          python keycloak.py
