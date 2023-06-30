@@ -16,10 +16,19 @@ KEYCLOAK_GROUPS_URL = f"{KEYCLOAK_REALM_URL}/groups"
 
 KEYCLOAK_AUTH_URL = f"{BASE_URL}/auth/realms/master/protocol/openid-connect/token"
 
-GROUP_NAMES = [
-    "amit-test-1",
-    "amit-test-2",
-]
+
+COUPON_GROUPS_MAPPING = {
+    "NEBARI-SCIPY-2023-GPU-PQR": [
+        "amit-test-1",
+        "amit-test-2",
+    ],
+
+    "NEBARI-SCIPY-2023-CPU-TYU": [
+        "amit-test-3",
+        "amit-test-4",
+    ],
+
+}
 
 
 def generate_deterministic_uuid(text, salt="nebari-gh-random"):
@@ -141,7 +150,10 @@ def main():
             }
             user_id = kclient.create_user(user_data)
             if user_id:
-                response = kclient.add_user_to_group(user_id, group_names=GROUP_NAMES)
+                user_coupon = user.get('Coupon')
+                user_groups = COUPON_GROUPS_MAPPING.get(user_coupon, [])
+                logging.info(f"Groups to add the user in: {user_groups}")
+                response = kclient.add_user_to_group(user_id, group_names=user_groups)
                 logging.info(f"Group add responses: {response}")
         except Exception as e:
             logging.info(f"Failed to create user: {user}")
