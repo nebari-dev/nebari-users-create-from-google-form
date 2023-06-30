@@ -136,6 +136,7 @@ def main():
         except Exception as e:
             logging.info(f"Failed to create user: {user}")
             logging.info(e)
+            raise e
 
 
 if __name__ == "__main__":
