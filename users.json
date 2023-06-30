@@ -1,1 +1,10 @@
-[{"Name":"Amit Kumar","Email":"dtu.amit@gmail.com"},{"Name":"Amit","Email":"me@iamit.in"}]
+[
+  {
+    "Name": "Amit Kumar",
+    "Email": "deleteme1@quansight.com"
+  },
+  {
+    "Name": "Amit",
+    "Email": "deleteme2@iamit.in"
+  }
+]

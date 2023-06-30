@@ -10,8 +10,15 @@ BASE_URL = os.environ["BASE_URL"]
 CLIENT_ID = os.environ["CLIENT_ID"]
 CLIENT_SECRET = os.environ["CLIENT_SECRET"]
 
-KEYCLOAK_URL = f"{BASE_URL}/auth/admin/realms/{REALM_NAME}/users"
-AUTH_URL = f"{BASE_URL}/auth/realms/master/protocol/openid-connect/token"
+KEYCLOAK_USERS_URL = f"{BASE_URL}/auth/admin/realms/{REALM_NAME}/users"
+KEYCLOAK_GROUPS_URL = f"{BASE_URL}/auth/admin/realms/{REALM_NAME}/groups"
+
+KEYCLOAK_AUTH_URL = f"{BASE_URL}/auth/realms/master/protocol/openid-connect/token"
+
+GROUP_NAMES = [
+    "amit-test-1",
+    "amit-test-2",
+]
 
 
 def generate_deterministic_uuid(text, salt="nebari-gh-random"):
@@ -35,22 +42,58 @@ class KeyCloakClient:
         access_token = response_data["access_token"]
         return access_token
 
-    def create_user(self, user_data):
-        access_token = self.get_access_token()
-        headers = {
+    def get_groups(self):
+        response = requests.get(
+            KEYCLOAK_GROUPS_URL,
+            headers=self._create_headers(),
+        )
+        rjson = response.json()
+        return {group['name']: group for group in rjson}
+
+    def add_user_to_group(self, user_id, group_names):
+        groups = self.get_groups()
+        group_ids = {groups[group_name]['id'] for group_name in group_names}
+        logging.info(f"Adding user {user_id} to groups: {group_names}")
+        group_add_urls = {
+            f"{KEYCLOAK_USERS_URL}/{user_id}/groups/{group_id}"
+            for group_id in group_ids
+        }
+        responses = []
+        for group_add_url in group_add_urls:
+            response = requests.put(
+                group_add_url,
+                headers=self._create_headers(),
+            )
+            responses.append(response)
+            logging.info(f"Adding user to group {group_add_url} response: {response}")
+        return responses
+
+    def _create_headers(self, access_token=None):
+        if not access_token:
+            access_token = self.get_access_token()
+        return {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {access_token}"
         }
+
+    def create_user(self, user_data):
+        headers = self._create_headers()
         response = requests.post(
             self.realm_url,
             headers=headers, data=json.dumps(user_data)
         )
+        user_id = None
+        try:
+            user_id = response.headers["Location"].split("/")[-1]
+        except Exception as e:
+            logging.error(e)
+            pass
         if response.status_code == 201:
             logging.info("User created successfully!")
         else:
             logging.info(f"Failed to create user. Status code: {response.status_code}")
             logging.info(f"Response: {response.text}")
-        return response
+        return user_id
 
 
 def setup_logging():
@@ -66,7 +109,7 @@ def setup_logging():
 
 def main():
     setup_logging()
-    kclient = KeyCloakClient(realm_url=KEYCLOAK_URL, auth_url=AUTH_URL)
+    kclient = KeyCloakClient(realm_url=KEYCLOAK_USERS_URL, auth_url=KEYCLOAK_AUTH_URL)
     users = json.load(open('users.json', 'r'))
     total_users = len(users)
     for idx, user in enumerate(users):
@@ -86,7 +129,10 @@ def main():
                     "temporary": False
                 }]
             }
-            kclient.create_user(user_data)
+            user_id = kclient.create_user(user_data)
+            if user_id:
+                response = kclient.add_user_to_group(user_id, group_names=GROUP_NAMES)
+                logging.info(f"Group add responses: {response}")
         except Exception as e:
             logging.info(f"Failed to create user: {user}")
             logging.info(e)
