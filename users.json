@@ -10,5 +10,10 @@
   {
     "Name": "Amit Kumar",
     "Email": "deleteme3@quansight.com"
+  },
+  {
+    "Name": "amit",
+    "Email": "deleteme4@quansight.com",
+    "Coupon": "NEBARI-SCIPY-2023-GPU-PQR"
   }
 ]
