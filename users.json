@@ -21,5 +21,11 @@
     "Password": "aktech1234",
     "Are you attending the \"3D Visualization with PyVista\" Tutorial?": "Yes",
     "Coupon": "dsdsfdffsf"
+  },
+  {
+    "Username": "aktech",
+    "Password": "aktech12344",
+    "Attending PyVista Tutorial?": "Yes",
+    "Coupon": "scipy1234"
   }
 ]
