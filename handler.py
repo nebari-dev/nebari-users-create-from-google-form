@@ -59,8 +59,10 @@ def handler(event, context):
     if coupon and coupon.lower() == SCIPY_COUPON:
         create_user(username, password, coupon, pyvista)
     else:
+        msg = f"Invalid coupon code: {coupon}"
+        logger.info(msg)
         return {
-            "message": f"Invalid coupon code: {coupon}"
+            "message": msg
         }
     return {
         "status": "ok",
