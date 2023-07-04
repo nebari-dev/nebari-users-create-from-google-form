@@ -3,14 +3,9 @@ function onSubmitForm(e) {
     sendFormDataToGitHub(formAttributes);
 }
 
-function decodeBase64(base64String) {
-    var decodedBytes = Utilities.base64Decode(base64String);
-    return Utilities.newBlob(decodedBytes).getDataAsString();
-}
-
-
 function sendApiRequest(username, password, coupon, pyvista) {
-    var url = "https://4y6bjkv5z0.execute-api.us-east-2.amazonaws.com/";
+    const scriptProperties = PropertiesService.getScriptProperties();
+    const url = scriptProperties.getProperty('LAMBDA_URL');
     var headers = {
         "Content-Type": "application/json"
     };

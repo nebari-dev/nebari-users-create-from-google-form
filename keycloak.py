@@ -10,11 +10,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel('INFO')
 
 
-def generate_deterministic_uuid(text, salt="nebari-gh-random"):
-    text_ = f"{text}-{salt}"
-    return uuid.uuid5(uuid.NAMESPACE_URL, text_).hex
-
-
 class KeyCloakClient:
     def __init__(self, realm_url, auth_url):
         self.realm_url = realm_url
