@@ -45,7 +45,7 @@ class KeyCloakClient:
             headers=self._create_headers(),
         )
         rjson = response.json()
-        return {user['email']: user for user in rjson}
+        return {user['username']: user for user in rjson}
 
     def add_user_to_group(self, user_id, group_names):
         groups = self.get_groups()
@@ -86,9 +86,9 @@ class KeyCloakClient:
             user_id = response.headers["Location"].split("/")[-1]
 
         if response.status_code == 409:
-            logger.info(f"User already exists: {user_data['email']} {response.status_code}")
+            logger.info(f"User already exists: {user_data['username']} {response.status_code}")
             users = self.get_users()
-            user_id = users[user_data['email']]['id']
+            user_id = users[user_data['username']]['id']
         else:
             logger.info(f"Failed to create user. Status code: {response.status_code}")
             logger.info(f"Response: {response.text}")
