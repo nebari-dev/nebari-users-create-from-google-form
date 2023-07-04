@@ -3,6 +3,14 @@ name: Deploy Lambda
 on:
   workflow_dispatch:
 
+env:
+  REALM_NAME: ${{ secrets.REALM_NAME }}
+  BASE_URL: ${{ secrets.BASE_URL }}
+  CLIENT_ID: ${{ secrets.CLIENT_ID }}
+  CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+  SCRIPT_ID: ${{ secrets.SCRIPT_ID }}
+
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -10,6 +18,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Create environment variable
+        run: |
+          envsubst < .env.tpl > .env
 
       - name: serverless deploy
         uses: serverless/github-action@v3.2
