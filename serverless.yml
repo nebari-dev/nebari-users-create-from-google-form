@@ -1,0 +1,19 @@
+service: nebari-scipy-2023-user-creator
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.10
+  region: us-east-2
+
+functions:
+  hello:
+    handler: handler.handler
+    events:
+      - httpApi:
+          path: /
+          method: post
+
+plugins:
+  - serverless-python-requirements
+  - serverless-dotenv-plugin

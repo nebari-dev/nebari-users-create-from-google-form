@@ -21,3 +21,7 @@ env/
 .env
 
 .clasp.json
+.serverless
+node_modules
+package.json
+package-lock.json
