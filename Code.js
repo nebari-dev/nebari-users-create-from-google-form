@@ -6,6 +6,7 @@ function onSubmitForm(e) {
 function sendApiRequest(username, password, coupon, pyvista) {
     const scriptProperties = PropertiesService.getScriptProperties();
     const url = scriptProperties.getProperty('LAMBDA_URL');
+    const auth_key = scriptProperties.getProperty('LAMBDA_AUTH_KEY');
     var headers = {
         "Content-Type": "application/json"
     };
@@ -14,7 +15,8 @@ function sendApiRequest(username, password, coupon, pyvista) {
         "username": username,
         "password": password,
         "pyvista": pyvista,
-        "coupon": coupon
+        "coupon": coupon,
+        "auth_key": auth_key,
     };
 
     var options = {

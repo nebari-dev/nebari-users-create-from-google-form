@@ -8,6 +8,7 @@ KEYCLOAK_REALM_URL = f"{BASE_URL}/auth/admin/realms/{REALM_NAME}"
 KEYCLOAK_USERS_URL = f"{KEYCLOAK_REALM_URL}/users"
 KEYCLOAK_GROUPS_URL = f"{KEYCLOAK_REALM_URL}/groups"
 KEYCLOAK_AUTH_URL = f"{BASE_URL}/auth/realms/master/protocol/openid-connect/token"
+LAMBDA_AUTH_KEY = os.environ["LAMBDA_AUTH_KEY"]
 
 COUPON_GROUPS_MAPPING = {
     "gpu": [

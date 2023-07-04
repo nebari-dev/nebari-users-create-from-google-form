@@ -1,7 +1,8 @@
 import logging
 import json
+import os
 
-from config import KEYCLOAK_USERS_URL, KEYCLOAK_AUTH_URL, COUPON_GROUPS_MAPPING, SCIPY_COUPON
+from config import KEYCLOAK_USERS_URL, KEYCLOAK_AUTH_URL, COUPON_GROUPS_MAPPING, SCIPY_COUPON, LAMBDA_AUTH_KEY
 from keycloak import KeyCloakClient
 
 logging.basicConfig(
@@ -51,6 +52,16 @@ def create_user(
 def handler(event, context):
     print("Setting up logging")
     body = json.loads(event['body'])
+
+    # There is a better way to do it, but this is just
+    # a quick way to check if the request is coming from
+    # a trusted source.
+    if body.get('auth_key') != LAMBDA_AUTH_KEY:
+        error = "Authentication key mismatch"
+        return {
+            "error": error
+        }
+
     username = body['username']
     password = body['password']
     coupon: str = body['coupon']
@@ -66,6 +77,5 @@ def handler(event, context):
         }
     return {
         "status": "ok",
-        "body": body
     }
 
