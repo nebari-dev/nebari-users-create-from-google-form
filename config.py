@@ -18,3 +18,5 @@ COUPON_GROUPS_MAPPING = {
     ],
 
 }
+
+SCIPY_COUPON = "scipy2023"

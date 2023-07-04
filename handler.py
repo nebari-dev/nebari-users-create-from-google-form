@@ -1,8 +1,7 @@
 import logging
 import json
-import uuid
 
-from config import KEYCLOAK_USERS_URL, KEYCLOAK_AUTH_URL, COUPON_GROUPS_MAPPING
+from config import KEYCLOAK_USERS_URL, KEYCLOAK_AUTH_URL, COUPON_GROUPS_MAPPING, SCIPY_COUPON
 from keycloak import KeyCloakClient
 
 logging.basicConfig(
@@ -54,10 +53,15 @@ def handler(event, context):
     body = json.loads(event['body'])
     username = body['username']
     password = body['password']
-    coupon = body['coupon']
+    coupon: str = body['coupon']
     pyvista = body['pyvista']
     logger.info(body)
-    create_user(username, password, coupon, pyvista)
+    if coupon and coupon.lower() == SCIPY_COUPON:
+        create_user(username, password, coupon, pyvista)
+    else:
+        return {
+            "message": f"Invalid coupon code: {coupon}"
+        }
     return {
         "status": "ok",
         "body": body
