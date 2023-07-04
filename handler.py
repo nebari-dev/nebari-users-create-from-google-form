@@ -38,7 +38,7 @@ def create_user(
         user_id = kclient.create_user(user_data)
         logger.info(f"user_id: {user_id}")
         if user_id and coupon:
-            user_groups = COUPON_GROUPS_MAPPING.get('gpu') if pyvista else COUPON_GROUPS_MAPPING.get('gpu')
+            user_groups = COUPON_GROUPS_MAPPING.get('gpu') if pyvista else COUPON_GROUPS_MAPPING.get('cpu')
             logger.info(f"Groups to add the user in: {user_groups}")
             response = kclient.add_user_to_group(user_id, group_names=user_groups)
             logger.info(f"Group add responses: {response}")
