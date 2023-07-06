@@ -67,7 +67,7 @@ def send_to_slack(message):
 
 
 def slack_message(req_id, username, pyvista, msg):
-    return f"[`{req_id}`]: {msg} | username: {username}, pyvista: {pyvista}"
+    return f"[`{req_id}`]: {msg} | username: `{username}`, pyvista: `{pyvista}`"
 
 
 def handler(event, context):
@@ -90,18 +90,18 @@ def handler(event, context):
     pyvista = body['pyvista']
     logger.info(body)
     if coupon and coupon.lower() == SCIPY_COUPON:
-        slack_msg = slack_message(req_id, username, password, msg="⚙️ User creation started!")
+        slack_msg = slack_message(req_id, username, pyvista, msg="⚙️ User creation started!")
         send_to_slack(slack_msg)
         try:
             user_id = create_user(username, password, coupon, pyvista)
         except Exception as e:
-            slack_msg = slack_message(req_id, username, password, msg=f"❌ ERROR FATAL `{e}`")
+            slack_msg = slack_message(req_id, username, pyvista, msg=f"❌ ERROR FATAL `{e}`")
             send_to_slack(slack_msg)
             raise e
-        slack_msg = slack_message(req_id, username, password, msg=f"✅ User creation complete! user_id: {user_id}")
+        slack_msg = slack_message(req_id, username, pyvista, msg=f"✅ User creation complete! user_id: `{user_id}`")
         send_to_slack(slack_msg)
     else:
-        slack_msg = slack_message(req_id, username, password, msg=f"🚫 ERROR! Invalid Coupon: {coupon}")
+        slack_msg = slack_message(req_id, username, pyvista, msg=f"🚫 ERROR! Invalid Coupon: `{coupon}`")
         send_to_slack(slack_msg)
         msg = f"Invalid coupon code: {coupon}"
         logger.info(msg)
