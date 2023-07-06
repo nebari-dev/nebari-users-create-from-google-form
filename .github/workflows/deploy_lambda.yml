@@ -10,6 +10,7 @@ env:
   CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
   SCRIPT_ID: ${{ secrets.SCRIPT_ID }}
   LAMBDA_AUTH_KEY: ${{ secrets.LAMBDA_AUTH_KEY }}
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
 jobs:

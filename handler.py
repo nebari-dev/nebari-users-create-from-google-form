@@ -1,6 +1,7 @@
 import logging
 import json
 import os
+import requests
 
 from config import KEYCLOAK_USERS_URL, KEYCLOAK_AUTH_URL, COUPON_GROUPS_MAPPING, SCIPY_COUPON, LAMBDA_AUTH_KEY
 from keycloak import KeyCloakClient
@@ -43,15 +44,29 @@ def create_user(
             logger.info(f"Groups to add the user in: {user_groups}")
             response = kclient.add_user_to_group(user_id, group_names=user_groups)
             logger.info(f"Group add responses: {response}")
+            return user_id
     except Exception as e:
         logger.info(f"Failed to create user: {username}")
         logger.info(e)
         raise e
 
 
+def send_to_slack(message):
+    slack_url = os.environ['SLACK_WEBHOOK_URL']
+    headers = {'Content-type': 'application/json'}
+    data = {'text': message}
+    response = requests.post(slack_url, headers=headers, data=json.dumps(data))
+    print(response.status_code)
+
+
+def slack_message(req_id, username, pyvista, msg):
+    return f"[`{req_id}`]: {msg} | username: {username}, pyvista: {pyvista}",
+
+
 def handler(event, context):
     print("Setting up logging")
     body = json.loads(event['body'])
+    req_id = context.aws_request_id[:7]
 
     # There is a better way to do it, but this is just
     # a quick way to check if the request is coming from
@@ -68,8 +83,19 @@ def handler(event, context):
     pyvista = body['pyvista']
     logger.info(body)
     if coupon and coupon.lower() == SCIPY_COUPON:
-        create_user(username, password, coupon, pyvista)
+        slack_msg = slack_message(req_id, username, password, msg="⚙️ User creation started!")
+        send_to_slack(slack_msg)
+        try:
+            user_id = create_user(username, password, coupon, pyvista)
+        except Exception as e:
+            slack_msg = slack_message(req_id, username, password, msg=f"❌ ERROR FATAL `{e}`")
+            send_to_slack(slack_msg)
+            raise e
+        slack_msg = slack_message(req_id, username, password, msg=f"✅ User creation complete! user_id: {user_id}")
+        send_to_slack(slack_msg)
     else:
+        slack_msg = slack_message(req_id, username, password, msg=f"🚫 ERROR! Invalid Coupon: {coupon}")
+        send_to_slack(slack_msg)
         msg = f"Invalid coupon code: {coupon}"
         logger.info(msg)
         return {
