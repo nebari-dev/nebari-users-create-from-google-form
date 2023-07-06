@@ -58,7 +58,7 @@ def send_to_slack(message):
         logger.info(f"Slack url: {slack_url}")
         headers = {'Content-type': 'application/json'}
         data = {'text': message}
-        response = requests.post(slack_url, headers=headers, data=json.dumps(data))
+        response = requests.post(slack_url, headers=headers, json=data)
         logger.info(f"Slack response: {response} | {response.content}")
         return response
     except Exception as e:
@@ -67,7 +67,7 @@ def send_to_slack(message):
 
 
 def slack_message(req_id, username, pyvista, msg):
-    return f"[`{req_id}`]: {msg} | username: {username}, pyvista: {pyvista}",
+    return f"[`{req_id}`]: {msg} | username: {username}, pyvista: {pyvista}"
 
 
 def handler(event, context):
