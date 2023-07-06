@@ -52,11 +52,17 @@ def create_user(
 
 
 def send_to_slack(message):
-    slack_url = os.environ['SLACK_WEBHOOK_URL']
-    headers = {'Content-type': 'application/json'}
-    data = {'text': message}
-    response = requests.post(slack_url, headers=headers, data=json.dumps(data))
-    print(response.status_code)
+    try:
+        logger.info(f"Sending message to slack: {message}")
+        slack_url = os.environ['SLACK_WEBHOOK_URL']
+        logger.info(f"Slack url: {slack_url}")
+        headers = {'Content-type': 'application/json'}
+        data = {'text': message}
+        response = requests.post(slack_url, headers=headers, data=json.dumps(data))
+        return response
+    except Exception as e:
+        logger.error(f"Sending message to slack failed: {e}")
+
 
 
 def slack_message(req_id, username, pyvista, msg):

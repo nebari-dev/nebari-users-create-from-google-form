@@ -80,7 +80,7 @@ class KeyCloakClient:
             logger.info("User created successfully!")
             user_id = response.headers["Location"].split("/")[-1]
 
-        if response.status_code == 409:
+        elif response.status_code == 409:
             logger.info(f"User already exists: {user_data['username']} {response.status_code}")
             users = self.get_users()
             user_id = users[user_data['username']]['id']
