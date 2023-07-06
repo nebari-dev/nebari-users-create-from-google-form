@@ -59,6 +59,7 @@ def send_to_slack(message):
         headers = {'Content-type': 'application/json'}
         data = {'text': message}
         response = requests.post(slack_url, headers=headers, data=json.dumps(data))
+        logger.info(f"Slack response: {response} | {response.content}")
         return response
     except Exception as e:
         logger.error(f"Sending message to slack failed: {e}")
