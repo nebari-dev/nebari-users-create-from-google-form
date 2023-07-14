@@ -16,3 +16,21 @@ The information flow is like the following:
 Below is a brief diagram for the architecture:
 
 ![Nebari Auto Create](nebari-auto-create.jpg)
+
+## Creating credentials to deploy AppScript
+
+- Setting up clasp
+
+```
+npm install @google/clasp -g
+```
+
+```bash
+clasp login
+```
+
+- Set `.clasprc.json` (file in your home directory) to `CLASPRC` GitHub Actions secret
+
+```bash
+cat ~/.clasprc.json
+```
